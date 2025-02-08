@@ -1,0 +1,72 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Auto Sell DAI</title>  
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.0.0/dist/ethers.umd.min.js"></script>  
+</head>  
+<body>  
+    <h1>Auto Sell DAI for MATIC</h1>  
+    <button id="connectButton">Connect Wallet</button>  
+    <p id="walletAddress">Not connected</p>  
+    <p id="daiBalance">DAI Balance: 0</p>  
+    <button id="startButton">Auto Sell DAI</button>  
+    <button id="stopButton">Stop Selling</button>  
+
+    <script>  
+        const daiAddress = "0x8f3cf7ad23cd3cadbd9735aff956c39b2a0d5b92"; // DAI address on Polygon  
+        const contractAddress = "0xYourContractAddressHere"; // Replace with your deployed contract address  
+        const provider = new ethers.providers.Web3Provider(window.ethereum);  
+        let signer;  
+        let walletAddress;  
+        let daiContract;  
+        let autoSellInterval;  
+
+        // ABI for the DAI and AutoSellDAI contract  
+        const daiABI = [  
+            'function balanceOf(address owner) view returns (uint256)',  
+            'function approve(address spender, uint256 value) returns (bool)'  
+        ];  
+        
+        const autoSellABI = [  
+            'function sellDAI()'  
+        ];  
+
+        document.getElementById("connectButton").onclick = async () => {  
+            await provider.send("eth_requestAccounts", []);  
+            signer = provider.getSigner();  
+            walletAddress = await signer.getAddress();  
+            document.getElementById("walletAddress").innerText = "Connected: " + walletAddress;  
+            await updateDaiBalance();  
+        };  
+
+        async function updateDaiBalance() {  
+            daiContract = new ethers.Contract(daiAddress, daiABI, provider);  
+            const balance = await daiContract.balanceOf(walletAddress);  
+            const balanceInDai = ethers.utils.formatUnits(balance, 18);  
+            document.getElementById("daiBalance").innerText = "DAI Balance: " + balanceInDai;  
+        }  
+
+        document.getElementById("startButton").onclick = async () => {  
+            const contractWithSigner = new ethers.Contract(contractAddress, autoSellABI, signer);  
+            autoSellInterval = setInterval(async () => {  
+                try {  
+                    const tx = await contractWithSigner.sellDAI();  
+                    await tx.wait(); // Wait for the transaction to be mined  
+                    console.log("DAI sold successfully");  
+                    await updateDaiBalance(); // Update DAI balance after sale  
+                } catch (error) {  
+                    console.error("Error selling DAI:", error);  
+                }  
+            }, 30000); // Trigger every 30 seconds  
+        };  
+
+        document.getElementById("stopButton").onclick = () => {  
+            clearInterval(autoSellInterval); // Stop the selling process  
+            console.log("Auto selling stopped.");  
+        };  
+
+    </script>  
+</body>  
+</html>
