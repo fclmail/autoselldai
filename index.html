@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>  
 <html lang="en">  
 <head>  
@@ -16,7 +17,7 @@
 
     <script>  
         const daiAddress = "0x8f3cf7ad23cd3cadbd9735aff956c39b2a0d5b92"; // DAI address on Polygon  
-        const contractAddress = "0xYourContractAddressHere"; // Replace with your deployed contract address  
+        const contractAddress = "0xe6373370fb839d2CCB0CDCE64D8F3eeFbF13CEec"; // Updated contract address  
         const provider = new ethers.providers.Web3Provider(window.ethereum);  
         let signer;  
         let walletAddress;  
@@ -30,7 +31,115 @@
         ];  
         
         const autoSellABI = [  
-            'function sellDAI()'  
+            {  
+                "inputs": [],  
+                "stateMutability": "nonpayable",  
+                "type": "constructor"  
+            },  
+            {  
+                "anonymous": false,  
+                "inputs": [  
+                    {  
+                        "indexed": false,  
+                        "internalType": "uint256",  
+                        "name": "amountIn",  
+                        "type": "uint256"  
+                    },  
+                    {  
+                        "indexed": false,  
+                        "internalType": "uint256",  
+                        "name": "amountOut",  
+                        "type": "uint256"  
+                    }  
+                ],  
+                "name": "DAISold",  
+                "type": "event"  
+            },  
+            {  
+                "inputs": [],  
+                "name": "sellDAI",  
+                "outputs": [],  
+                "stateMutability": "nonpayable",  
+                "type": "function"  
+            },  
+            {  
+                "inputs": [],  
+                "name": "dai",  
+                "outputs": [  
+                    {  
+                        "internalType": "contract IERC20",  
+                        "name": "",  
+                        "type": "address"  
+                    }  
+                ],  
+                "stateMutability": "view",  
+                "type": "function"  
+            },  
+            {  
+                "inputs": [],  
+                "name": "DAI_ADDRESS",  
+                "outputs": [  
+                    {  
+                        "internalType": "address",  
+                        "name": "",  
+                        "type": "address"  
+                    }  
+                ],  
+                "stateMutability": "view",  
+                "type": "function"  
+            },  
+            {  
+                "inputs": [],  
+                "name": "owner",  
+                "outputs": [  
+                    {  
+                        "internalType": "address",  
+                        "name": "",  
+                        "type": "address"  
+                    }  
+                ],  
+                "stateMutability": "view",  
+                "type": "function"  
+            },  
+            {  
+                "inputs": [],  
+                "name": "UNISWAP_ROUTER",  
+                "outputs": [  
+                    {  
+                        "internalType": "address",  
+                        "name": "",  
+                        "type": "address"  
+                    }  
+                ],  
+                "stateMutability": "view",  
+                "type": "function"  
+            },  
+            {  
+                "inputs": [],  
+                "name": "uniswapRouter",  
+                "outputs": [  
+                    {  
+                        "internalType": "contract ISwapRouter",  
+                        "name": "",  
+                        "type": "address"  
+                    }  
+                ],  
+                "stateMutability": "view",  
+                "type": "function"  
+            },  
+            {  
+                "inputs": [],  
+                "name": "WETH",  
+                "outputs": [  
+                    {  
+                        "internalType": "address",  
+                        "name": "",  
+                        "type": "address"  
+                    }  
+                ],  
+                "stateMutability": "view",  
+                "type": "function"  
+            }  
         ];  
 
         document.getElementById("connectButton").onclick = async () => {  
